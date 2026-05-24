@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
+import { useCartStore } from '@/stores/cartStore'
 
 const props = defineProps({
   product: {
@@ -8,7 +9,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['buy'])
+const cartStore = useCartStore()
 
 const discountedPrice = computed(() => {
   if (props.product.discount > 0) {
@@ -26,7 +27,7 @@ const stockClass = computed(() =>
 )
 
 function handleBuy() {
-  emit('buy', props.product.id)
+  cartStore.addToCart(props.product)
 }
 
 onMounted(() => {
@@ -73,10 +74,7 @@ onUnmounted(() => {
         >
           ${{ product.price }}
         </span>
-        <span
-          v-if="product.discount > 0"
-          class="badge badge-secondary"
-        >
+        <span v-if="product.discount > 0" class="badge badge-secondary">
           -{{ product.discount }}% OFF
         </span>
       </div>

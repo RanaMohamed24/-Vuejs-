@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useCartStore } from '@/stores/cartStore'
 
 const props = defineProps({
   product: {
@@ -9,12 +10,18 @@ const props = defineProps({
   },
 })
 
+const cartStore = useCartStore()
+
 const discountedPrice = computed(() => {
   if (props.product.discount > 0) {
     return props.product.price - (props.product.price * props.product.discount) / 100
   }
   return props.product.price
 })
+
+function handleAddToCart() {
+  cartStore.addToCart(props.product)
+}
 
 onMounted(() => {
   console.log(`ProductCard mounted — ${props.product.name}`)
@@ -59,10 +66,26 @@ onUnmounted(() => {
         </span>
       </div>
 
-      <div class="card-actions mt-2">
+      <div class="flex items-center gap-2 mt-1">
+        <span
+          class="badge badge-sm"
+          :class="product.stock > 0 ? 'badge-success' : 'badge-error'"
+        >
+          {{ product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock' }}
+        </span>
+      </div>
+
+      <div class="card-actions mt-2 flex gap-2">
         <RouterLink :to="{ name: 'product', params: { id: product.id } }">
-          <button class="btn btn-primary btn-sm">View Product</button>
+          <button class="btn btn-outline btn-sm">View</button>
         </RouterLink>
+        <button
+          class="btn btn-primary btn-sm"
+          :disabled="product.stock === 0"
+          @click="handleAddToCart"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   </div>

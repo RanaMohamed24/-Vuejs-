@@ -14,6 +14,11 @@ const routes = [
     props: (route) => ({ productId: Number(route.params.id) }),
   },
   {
+    path: '/cart',
+    name: 'cart',
+    component: () => import('@/views/CartView.vue'),
+  },
+  {
     path: '/about',
     name: 'about',
     component: () => import('@/views/AboutView.vue'),
@@ -21,7 +26,7 @@ const routes = [
   {
     path: '/:catchAll(.*)',
     name: 'not-found',
-    component: () => import('@/views/HomeView.vue'),
+    component: HomeView,
   },
 ]
 

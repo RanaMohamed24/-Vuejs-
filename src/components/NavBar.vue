@@ -1,17 +1,9 @@
 <script setup>
-import { computed, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useCartStore } from '@/stores/cartStore'
 
-const props = defineProps({
-  products: {
-    type: Array,
-    default: () => [],
-  },
-})
-
-const totalStock = computed(() =>
-  props.products.reduce((sum, p) => sum + p.stock, 0)
-)
+const cartStore = useCartStore()
 
 onMounted(() => {
   console.log('NavBar mounted')
@@ -29,9 +21,13 @@ onUnmounted(() => {
     </div>
     <div class="flex gap-4 items-center">
       <RouterLink to="/" class="btn btn-ghost btn-sm">Home</RouterLink>
-      <RouterLink to="/product/1" class="btn btn-ghost btn-sm">Product</RouterLink>
+      <RouterLink to="/cart" class="btn btn-ghost btn-sm">
+        Cart
+        <span v-if="cartStore.totalItems > 0" class="badge badge-primary badge-sm">
+          {{ cartStore.totalItems }}
+        </span>
+      </RouterLink>
       <RouterLink to="/about" class="btn btn-ghost btn-sm">About</RouterLink>
-      <div class="badge badge-primary">Stock: {{ totalStock }}</div>
     </div>
   </nav>
 </template>
